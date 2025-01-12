@@ -8,6 +8,7 @@ The Resume Processor API is a Django-based REST API that processes resume files 
 - Extract key details such as first name, email, and mobile number.
 - Sanitize the extracted data before saving to the database.
 - Provides an API endpoint for submitting resumes and receiving the processed data.
+- Includes rate limiting to prevent abuse. Each IP is restricted to a maximum of 10 requests per minute, ensuring fair use and protecting the server from overload.
 
 ## Installation
 

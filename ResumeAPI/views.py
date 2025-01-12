@@ -5,9 +5,16 @@ from .serializers import CandidateSerializer
 from .models import Candidate
 from .utils.resume_data_extraction import extract_data_from_resume
 from .utils.data_sanitization import sanitize_candidate_data
+from django_ratelimit.decorators import ratelimit
 
+@ratelimit(key='ip', rate='10/m', method='ALL', burst=True)
 @api_view(['POST'])
 def extract_resume(request):
+    # Check if rate limit is exceeded
+    if getattr(request, 'limited', False):
+        return Response({'error': 'Rate limit exceeded. Try again later.'}, status=429)
+
+    # Check if resume file is submitted
     if 'resume' not in request.FILES:
         return Response({'Error':'No resume file provided.'}, status=status.HTTP_400_BAD_REQUEST)
     
