@@ -43,6 +43,7 @@ def extract_candidate_info(text):
                 first_name = first_name.group(0)
                 break
     
+    
     email = re.search(r"[\w\.-]+@[\w\.-]+\.\w+", text)
     mobile_number = re.search(r"\+?\d{1,2}[-.\s]?\(?\d{1,3}\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,4}", text)
 

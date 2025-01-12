@@ -4,8 +4,7 @@ from rest_framework.response import Response
 from .serializers import CandidateSerializer
 from .models import Candidate
 from .utils.resume_data_extraction import extract_data_from_resume
-# from .utils import extract_data_from_resume, sanitize_data
-
+from .utils.data_sanitization import sanitize_candidate_data
 
 @api_view(['POST'])
 def extract_resume(request):
@@ -18,11 +17,14 @@ def extract_resume(request):
         # extract data
         extracted_data = extract_data_from_resume(resume_file)
         
+        # sanitize data
+        sanitized_data = sanitize_candidate_data(extracted_data)
+        
         # Create a new candidate entry
         candidate = Candidate.objects.create(
-            first_name=extracted_data['first_name'],
-            email=extracted_data['email'],
-            mobile_number=extracted_data['mobile_number']
+            first_name=sanitized_data['first_name'],
+            email=sanitized_data['email'],
+            mobile_number=sanitized_data['mobile_number']
         )
         
         # Serialize and return the response
@@ -31,4 +33,5 @@ def extract_resume(request):
         
         
     except Exception as e:
+        print(e)
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
